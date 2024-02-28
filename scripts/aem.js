@@ -27,12 +27,12 @@ function sampleRUM(checkpoint, data = {}) {
     sampleRUM[fnname] = sampleRUM[fnname] || ((...args) => sampleRUM.defer.push({ fnname, args }));
   };
   sampleRUM.drain = sampleRUM.drain
-    || ((dfnname, fn) => {
-      sampleRUM[dfnname] = fn;
-      sampleRUM.defer
-        .filter(({ fnname }) => dfnname === fnname)
-        .forEach(({ fnname, args }) => sampleRUM[fnname](...args));
-    });
+      || ((dfnname, fn) => {
+        sampleRUM[dfnname] = fn;
+        sampleRUM.defer
+            .filter(({ fnname }) => dfnname === fnname)
+            .forEach(({ fnname, args }) => sampleRUM[fnname](...args));
+      });
   sampleRUM.always = sampleRUM.always || [];
   sampleRUM.always.on = (chkpnt, fn) => {
     sampleRUM.always[chkpnt] = fn;
@@ -48,9 +48,9 @@ function sampleRUM(checkpoint, data = {}) {
       const usp = new URLSearchParams(window.location.search);
       const weight = usp.get('rum') === 'on' ? 1 : 100; // with parameter, weight is 1. Defaults to 100.
       const id = Array.from({ length: 75 }, (_, i) => String.fromCharCode(48 + i))
-        .filter((a) => /\d|[A-Z]/i.test(a))
-        .filter(() => Math.random() * 75 > 70)
-        .join('');
+          .filter((a) => /\d|[A-Z]/i.test(a))
+          .filter(() => Math.random() * 75 > 70)
+          .join('');
       const random = Math.random();
       const isSelected = random * weight < 1;
       const firstReadTime = Date.now();
@@ -89,15 +89,15 @@ function sampleRUM(checkpoint, data = {}) {
       const sendPing = (pdata = data) => {
         // eslint-disable-next-line object-curly-newline, max-len, no-use-before-define
         const body = JSON.stringify(
-          {
-            weight,
-            id,
-            referer: window.hlx.rum.sanitizeURL(),
-            checkpoint,
-            t: Date.now() - firstReadTime,
-            ...data,
-          },
-          knownProperties,
+            {
+              weight,
+              id,
+              referer: window.hlx.rum.sanitizeURL(),
+              checkpoint,
+              t: Date.now() - firstReadTime,
+              ...data,
+            },
+            knownProperties,
         );
         const url = `https://rum.hlx.page/.rum/${weight}`;
         // eslint-disable-next-line no-unused-expressions
@@ -174,12 +174,12 @@ function init() {
  */
 function toClassName(name) {
   return typeof name === 'string'
-    ? name
-      .toLowerCase()
-      .replace(/[^0-9a-z]/gi, '-')
-      .replace(/-+/g, '-')
-      .replace(/^-|-$/g, '')
-    : '';
+      ? name
+          .toLowerCase()
+          .replace(/[^0-9a-z]/gi, '-')
+          .replace(/-+/g, '-')
+          .replace(/^-|-$/g, '')
+      : '';
 }
 
 /**
@@ -288,8 +288,8 @@ async function loadScript(src, attrs) {
 function getMetadata(name, doc = document) {
   const attr = name && name.includes(':') ? 'property' : 'name';
   const meta = [...doc.head.querySelectorAll(`meta[${attr}="${name}"]`)]
-    .map((m) => m.content)
-    .join(', ');
+      .map((m) => m.content)
+      .join(', ');
   return meta || '';
 }
 
@@ -301,19 +301,36 @@ function getMetadata(name, doc = document) {
  * @param {Array} [breakpoints] Breakpoints and corresponding params (eg. width)
  * @returns {Element} The picture element
  */
+
 function createOptimizedPicture(
-  src,
-  alt = '',
-  eager = false,
-  breakpoints = [{ media: '(min-width: 600px)', width: '2000' }, { width: '750' }],
+    tag,
+    src,
+    alt = '',
+    eager = false,
+    breakpoints = [
+      { media: '(min-width: 900px)', width: '1024' },
+      { media: '(max-width: 600px)', width: '540' },
+      { media: '(max-width: 375px)', width: '375' },
+    ],
 ) {
   const url = new URL(src, window.location.href);
   const picture = document.createElement('picture');
   const { pathname } = url;
   const ext = pathname.substring(pathname.lastIndexOf('.') + 1);
 
+  let breakpointsTags = breakpoints;
+
+  if (tag === 'imagetext') {
+    breakpointsTags = [{ media: '', width: '1440' }];
+  } else if (tag === 'carousel-slider') {
+    breakpointsTags = [
+      { media: '(min-width: 600px)', width: '1024' },
+      { media: '(max-width: 375px)', width: '375' },
+    ];
+  }
+
   // webp
-  breakpoints.forEach((br) => {
+  breakpointsTags.forEach((br) => {
     const source = document.createElement('source');
     if (br.media) source.setAttribute('media', br.media);
     source.setAttribute('type', 'image/webp');
@@ -322,8 +339,8 @@ function createOptimizedPicture(
   });
 
   // fallback
-  breakpoints.forEach((br, i) => {
-    if (i < breakpoints.length - 1) {
+  breakpointsTags.forEach((br, i) => {
+    if (i < breakpointsTags.length - 1) {
       const source = document.createElement('source');
       if (br.media) source.setAttribute('media', br.media);
       source.setAttribute('srcset', `${pathname}?width=${br.width}&format=${ext}&optimize=medium`);
@@ -331,9 +348,10 @@ function createOptimizedPicture(
     } else {
       const img = document.createElement('img');
       img.setAttribute('loading', eager ? 'eager' : 'lazy');
+      img.setAttribute('fetchpriority', eager ? 'high' : 'low');
       img.setAttribute('alt', alt);
       picture.appendChild(img);
-      img.setAttribute('src', `${pathname}?width=${br.width}&format=${ext}&optimize=medium`);
+      img.setAttribute('src', `${pathname}?width=${br.width}&format=webply&optimize=medium`);
     }
   });
 
@@ -367,23 +385,33 @@ function decorateButtons(element) {
       const twoup = a.parentElement.parentElement;
       if (!a.querySelector('img')) {
         if (up.childNodes.length === 1 && (up.tagName === 'P' || up.tagName === 'DIV')) {
+          const buttonIcon = document.createElement('span');
+          buttonIcon.className = 'icon-span';
+          fetch('/icons/globe.svg')
+              .then((response) => response.text())
+              .then((svgContent) => {
+                buttonIcon.innerHTML = svgContent;
+              });
+
           a.className = 'button'; // default
           up.classList.add('button-container');
+          a.prepend(buttonIcon);
         }
+
         if (
-          up.childNodes.length === 1
-          && up.tagName === 'STRONG'
-          && twoup.childNodes.length === 1
-          && twoup.tagName === 'P'
+            up.childNodes.length === 1
+            && up.tagName === 'STRONG'
+            && twoup.childNodes.length === 1
+            && twoup.tagName === 'P'
         ) {
           a.className = 'button primary';
           twoup.classList.add('button-container');
         }
         if (
-          up.childNodes.length === 1
-          && up.tagName === 'EM'
-          && twoup.childNodes.length === 1
-          && twoup.tagName === 'P'
+            up.childNodes.length === 1
+            && up.tagName === 'EM'
+            && twoup.childNodes.length === 1
+            && twoup.tagName === 'P'
         ) {
           a.className = 'button secondary';
           twoup.classList.add('button-container');
@@ -401,8 +429,8 @@ function decorateButtons(element) {
  */
 function decorateIcon(span, prefix = '', alt = '') {
   const iconName = Array.from(span.classList)
-    .find((c) => c.startsWith('icon-'))
-    .substring(5);
+      .find((c) => c.startsWith('icon-'))
+      .substring(5);
   const img = document.createElement('img');
   img.dataset.iconName = iconName;
   img.src = `${window.hlx.codeBasePath}${prefix}/icons/${iconName}.svg`;
@@ -452,10 +480,13 @@ function decorateSections(main) {
       Object.keys(meta).forEach((key) => {
         if (key === 'style') {
           const styles = meta.style
-            .split(',')
-            .filter((style) => style)
-            .map((style) => toClassName(style.trim()));
+              .split(',')
+              .filter((style) => style)
+              .map((style) => toClassName(style.trim()));
           styles.forEach((style) => section.classList.add(style));
+        } else if (key === 'id') {
+          const id = toClassName(meta.id.trim());
+          section.setAttribute('id', id);
         } else {
           section.dataset[toCamelCase(key)] = meta[key];
         }
@@ -476,27 +507,27 @@ async function fetchPlaceholders(prefix = 'default') {
   if (!window.placeholders[prefix]) {
     window.placeholders[prefix] = new Promise((resolve) => {
       fetch(`${prefix === 'default' ? '' : prefix}/placeholders.json`)
-        .then((resp) => {
-          if (resp.ok) {
-            return resp.json();
-          }
-          return {};
-        })
-        .then((json) => {
-          const placeholders = {};
-          json.data
-            .filter((placeholder) => placeholder.Key)
-            .forEach((placeholder) => {
-              placeholders[toCamelCase(placeholder.Key)] = placeholder.Text;
-            });
-          window.placeholders[prefix] = placeholders;
-          resolve(window.placeholders[prefix]);
-        })
-        .catch(() => {
-          // error loading placeholders
-          window.placeholders[prefix] = {};
-          resolve(window.placeholders[prefix]);
-        });
+          .then((resp) => {
+            if (resp.ok) {
+              return resp.json();
+            }
+            return {};
+          })
+          .then((json) => {
+            const placeholders = {};
+            json.data
+                .filter((placeholder) => placeholder.Key)
+                .forEach((placeholder) => {
+                  placeholders[toCamelCase(placeholder.Key)] = placeholder.Text;
+                });
+            window.placeholders[prefix] = placeholders;
+            resolve(window.placeholders[prefix]);
+          })
+          .catch(() => {
+            // error loading placeholders
+            window.placeholders[prefix] = {};
+            resolve(window.placeholders[prefix]);
+          });
     });
   }
   return window.placeholders[`${prefix}`];
@@ -513,7 +544,7 @@ function updateSectionsStatus(main) {
     const status = section.dataset.sectionStatus;
     if (status !== 'loaded') {
       const loadingBlock = section.querySelector(
-        '.block[data-block-status="initialized"], .block[data-block-status="loading"]',
+          '.block[data-block-status="initialized"], .block[data-block-status="loading"]',
       );
       if (loadingBlock) {
         section.dataset.sectionStatus = 'loading';
@@ -572,8 +603,8 @@ async function loadBlock(block) {
         (async () => {
           try {
             const mod = await import(
-              `${window.hlx.codeBasePath}/blocks/${blockName}/${blockName}.js`
-            );
+                `${window.hlx.codeBasePath}/blocks/${blockName}/${blockName}.js`
+                );
             if (mod.default) {
               await mod.default(block);
             }
@@ -657,6 +688,27 @@ async function loadFooter(footer) {
   return loadBlock(footerBlock);
 }
 
+// Preload Hero image for LCP purpose
+function preloadHeroImage() {
+  const head = document.querySelector('head');
+  const main = document.querySelector('main');
+  const img = document.querySelector('img');
+  document.querySelector('picture').replaceWith(createOptimizedPicture('hero', img.src, img.alt, true));
+  const picture = main.querySelector('picture');
+
+  [...picture.querySelectorAll('source')].forEach((source) => {
+    if (source.type === 'image/webp') {
+      const link = document.createElement('link');
+      link.setAttribute('rel', 'preload');
+      link.setAttribute('as', 'image');
+      link.setAttribute('type', 'image/webp');
+      link.setAttribute('href', source.srcset);
+      link.setAttribute('media', source.media);
+      head.append(link);
+    }
+  });
+}
+
 /**
  * Load LCP block and/or wait for LCP in default content.
  * @param {Array} lcpBlocks Array of blocks
@@ -670,8 +722,13 @@ async function waitForLCP(lcpBlocks) {
   const lcpCandidate = document.querySelector('main img');
 
   await new Promise((resolve) => {
+    if (lcpBlocks.includes('hero')) {
+      preloadHeroImage();
+    }
+
     if (lcpCandidate && !lcpCandidate.complete) {
       lcpCandidate.setAttribute('loading', 'eager');
+      lcpCandidate.setAttribute('fetchpriority', 'high');
       lcpCandidate.addEventListener('load', resolve);
       lcpCandidate.addEventListener('error', resolve);
     } else {

@@ -1,34 +1,147 @@
-main .hero-container > div {
-  max-width: unset;
-}
-  
 main .hero-container {
-  padding: 0;
+  padding-top: var(--spacing-xl);
+  padding-bottom: 0;
+  background: linear-gradient(
+          to top,
+          var(--light-color) 0%,
+          var(--light-color) 20%,
+          var(--background-color-body) 20%,
+          var(--background-color-body) 100%
+  );
 }
 
-.hero {
-  position: relative;
-  padding: 32px;
-  min-height: 300px;
+main .hero-container + .section {
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+main .hero-container + .section > .default-content-wrapper {
+  font-size: var(--body-font-size-large);
+  line-height: var(--body-line-height-large);
+  padding-bottom: var(--spacing-xs);
+  padding-top: var(--spacing-xs);
 }
 
 .hero h1 {
-  max-width: 1200px;
-  margin-left: auto;
-  margin-right: auto;
-  color: white;
+  margin-bottom: var(--spacing-m);
+  overflow-wrap: break-word;
 }
 
-.hero picture {
-  position: absolute;
-  z-index: -1;
-  inset: 0;
-  object-fit: cover;
-  box-sizing: border-box;
+.hero h1 > strong {
+  display: block;
+  font-family: var(--heading1-strong-tag);
+  font-weight: 300;
+  color: var(--main-color);
+  font-size: 4.5rem;
+  line-height: 4.5rem;
 }
 
 .hero img {
+  display: block;
   object-fit: cover;
   width: 100%;
   height: 100%;
+  aspect-ratio: 4/3;
+  border-radius: var(--border-radius);
+}
+
+@media (width >= 1200px) {
+  :root {
+    --spacing-hero-left: 3.7rem;
+    --spacing-hero-right: unset;
+  }
+
+  main .hero-container {
+    padding-top: var(--spacing-xxl);
+    background: unset;
+  }
+
+  main .hero-container + .section {
+    min-height: var(--summary-height);
+    padding-top: var(--spacing-xxl);
+    padding-bottom: var(--spacing-xxl);
+  }
+
+  main .hero-container + .section > .default-content-wrapper {
+    width: 50%;
+    margin: 0;
+    margin-left: auto;
+    font-size: var(--body-font-size-large);
+    line-height: var(--body-line-height-large);
+    text-align: left;
+  }
+
+  main .hero-container + .section > .default-content-wrapper > * {
+    padding-left: var(--spacing-hero-left);
+  }
+
+  .hero-container .hero-wrapper {
+    height: calc(var(--hero-height) - 64px);
+  }
+
+  .hero {
+    height: 100%;
+  }
+
+  .hero > div {
+    height: 100%;
+  }
+
+  .hero > div > div {
+    height: 100%;
+    position: relative;
+    margin: 0 auto;
+    border-radius: var(--border-radius);
+    color: var(--text-color-dark);
+  }
+
+  .hero > div > div > div {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    order: 2;
+    align-self: center;
+    width: 50%;
+    height: 100%;
+    margin-left: auto;
+  }
+
+  .hero h1 {
+    margin: 0;
+    padding-left: var(--spacing-hero-left);
+  }
+
+  .hero h1 > strong {
+    font-size: 6rem;
+    line-height: 6rem;
+  }
+
+  .hero picture {
+    order: 1;
+    position: absolute;
+    inset: 0;
+    width: 50%;
+    max-height: 1000px;
+    aspect-ratio: 3/4;
+  }
+
+  .hero img {
+    aspect-ratio: unset;
+  }
+}
+
+@media (width >= 1200px) {
+  :root {
+    --spacing-hero-left: 7.6rem;
+    --spacing-hero-right: 6.13rem;
+  }
+
+  main .hero-container + .section > .default-content-wrapper > * {
+    padding-left: var(--spacing-hero-left);
+    padding-right: var(--spacing-hero-right);
+  }
+
+  .hero h1 {
+    padding-left: var(--spacing-hero-left);
+  }
 }

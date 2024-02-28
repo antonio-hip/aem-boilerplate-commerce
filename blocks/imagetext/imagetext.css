@@ -1,0 +1,65 @@
+.imagetext-container {
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.imagetext {
+  position: relative;
+  max-height: var(--image-text-max-height);
+}
+
+.imagetext > div > picture {
+  display: block;
+}
+
+.imagetext > div > picture + div {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  max-width: var(--image-text-content-max-width);
+  margin: 0 auto;
+  padding: 0 var(--spacing-m);
+}
+
+.imagetext > div > picture + div > .button-container a.button {
+  height: 48px;
+}
+
+.imagetext > div > picture img {
+  display: block;
+  width: 100%;
+  max-height: var(--image-text-max-height);
+  aspect-ratio: 3 / 7;
+  height: 100%;
+  object-fit: cover;
+}
+
+@media (width >= 900px) {
+  .imagetext-container {
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  .imagetext > div > picture + div {
+    position: absolute;
+    inset: 0;
+    padding: 0;
+    max-width: var(--image-text-max-width);
+    padding-left: var(--spacing-image-text-left);
+  }
+
+  .imagetext > div > picture + div > * {
+    max-width: var(--image-text-content-max-width);
+  }
+
+  .imagetext > div > picture img {
+    max-height: var(--image-text-image-max-height);
+    aspect-ratio: 16 / 9;
+  }
+
+  .imagetext > div > picture + div > .button-container a.button {
+    width: fit-content;
+  }
+}

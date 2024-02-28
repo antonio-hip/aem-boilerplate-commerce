@@ -1,10 +1,11 @@
 .columns > div {
   display: flex;
   flex-direction: column;
-}
-
-.columns img {
-  width: 100%;
+  justify-content: space-between;
+  font-size: var(--body-font-size-base);
+  line-height: var(--body-line-height-base);
+  color: var(--text-color-dark);
+  gap: 18px;
 }
 
 .columns > div > div {
@@ -15,19 +16,85 @@
   order: 0;
 }
 
+.columns > div > .columns-text-col h3 {
+  font-size: var(--heading-font-size-xs);
+  line-height: var(--heading-line-height-xs);
+}
+
+.columns > div > .columns-text-col p {
+  margin: 0;
+}
+
+.columns > div .columns-text-col-list {
+  padding-left: 0;
+  list-style-type: none;
+  counter-reset: css-counter 0;
+}
+
+.columns > div .columns-text-col-list > li {
+  counter-increment: css-counter 1;
+}
+
+.columns > div .columns-text-col-list > li > strong::before {
+  font-weight: 300;
+  content: counter(css-counter, decimal-leading-zero) ' ';
+}
+
+.columns > div .columns-text-col-list > li > strong {
+  display: inline-block;
+  font-size: var(--body-font-size-large);
+  line-height: var(--body-line-height-large);
+  margin: var(--spacing-l) 0 var(--spacing-xs);
+}
+
+.columns > div .columns-text-col-list > li:first-child > strong {
+  margin-top: 0;
+}
+
 .columns > div > .columns-img-col img {
   display: block;
+  width: 100%;
+  aspect-ratio: 1/1;
+  object-fit: cover;
+  border-radius: var(--border-radius);
+  max-height: 400px;
+}
+
+.columns > div:not(:last-child) {
+  margin-bottom: var(--spacing-m);
 }
 
 @media (width >= 900px) {
   .columns > div {
-    align-items: center;
     flex-direction: unset;
-    gap: 32px;
+    gap: 144px;
+  }
+
+  .columns > div > .columns-img-col picture {
+    max-width: 453px;
+  }
+
+  .columns > div > .columns-img-col img {
+    max-width: 453px;
+    aspect-ratio: 3/4;
+    max-height: unset;
+  }
+
+  .columns > div > .columns-img-col {
+    order: 0;
+    align-self: flex-start;
   }
 
   .columns > div > div {
-    flex: 1;
     order: unset;
+    text-align: left;
+  }
+
+  .columns > div:not(:last-child) {
+    margin-bottom: var(--spacing-xxl);
+  }
+
+  .columns > div > .columns-text-col {
+    flex: 1;
   }
 }
