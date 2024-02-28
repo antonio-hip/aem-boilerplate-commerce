@@ -3,7 +3,7 @@ import { getMetadata } from '../../scripts/aem.js';
 import { loadFragment } from '../fragment/fragment.js';
 
 // media query match that indicates mobile/tablet width
-const isDesktop = window.matchMedia('(min-width: 1200px)');
+const isDesktop = window.matchMedia('(min-width: 900px)');
 
 function closeOnEscape(e) {
   if (e.code === 'Escape') {
@@ -57,7 +57,7 @@ function toggleAllNavSections(sections, expanded = false) {
 function toggleMenu(nav, navSections, forceExpanded = null) {
   const expanded = forceExpanded !== null ? !forceExpanded : nav.getAttribute('aria-expanded') === 'true';
   const button = nav.querySelector('.nav-hamburger button');
-  document.body.style.overflowY = expanded || isDesktop.matches ? '' : 'hidden';
+  document.body.style.overflowY = (expanded || isDesktop.matches) ? '' : 'hidden';
   nav.setAttribute('aria-expanded', expanded ? 'false' : 'true');
   toggleAllNavSections(navSections, expanded || isDesktop.matches ? 'false' : 'true');
   button.setAttribute('aria-label', expanded ? 'Open navigation' : 'Close navigation');
@@ -87,14 +87,6 @@ function toggleMenu(nav, navSections, forceExpanded = null) {
   }
 }
 
-const closeNavOnClick = () => {
-  const nav = document.getElementById('nav');
-  const navSections = nav.querySelector('.nav-sections');
-  if (!isDesktop.matches) {
-    toggleMenu(nav, navSections);
-  }
-};
-
 /**
  * decorates the header, mainly the nav
  * @param {Element} block The header block element
@@ -119,34 +111,22 @@ export default async function decorate(block) {
   const navBrand = nav.querySelector('.nav-brand');
   const brandLink = navBrand.querySelector('.button');
   if (brandLink) {
-    const brandLinkIcon = brandLink.querySelector('.icon-span');
     brandLink.className = '';
-    brandLink.textContent = '';
     brandLink.closest('.button-container').className = '';
-    fetch('/icons/shopping-cart.svg')
-        .then((response) => response.text())
-        .then((svgContent) => {
-          brandLinkIcon.innerHTML = svgContent;
-        });
-    brandLink.append(brandLinkIcon);
   }
 
   const navSections = nav.querySelector('.nav-sections');
   if (navSections) {
-    navSections
-        .querySelectorAll(':scope .default-content-wrapper > ul > li')
-        .forEach((navSection) => {
-          if (navSection.querySelector('ul')) navSection.classList.add('nav-drop');
-          navSection.addEventListener('click', () => {
-            if (isDesktop.matches) {
-              navSection.removeEventListener('click', closeNavOnClick);
-              const expanded = navSection.getAttribute('aria-expanded') === 'true';
-              toggleAllNavSections(navSections);
-              navSection.setAttribute('aria-expanded', expanded ? 'false' : 'true');
-            }
-          });
-          navSection.addEventListener('click', closeNavOnClick);
-        });
+    navSections.querySelectorAll(':scope .default-content-wrapper > ul > li').forEach((navSection) => {
+      if (navSection.querySelector('ul')) navSection.classList.add('nav-drop');
+      navSection.addEventListener('click', () => {
+        if (isDesktop.matches) {
+          const expanded = navSection.getAttribute('aria-expanded') === 'true';
+          toggleAllNavSections(navSections);
+          navSection.setAttribute('aria-expanded', expanded ? 'false' : 'true');
+        }
+      });
+    });
   }
 
   const navTools = nav.querySelector('.nav-tools');
@@ -197,24 +177,4 @@ export default async function decorate(block) {
   navWrapper.className = 'nav-wrapper';
   navWrapper.append(nav);
   block.append(navWrapper);
-
-  // hide nav when scrolling down, display whe scrolling up
-  let lastScrollTop = (window.scrollY || document.documentElement.scrollTop);
-  let showHeaderTimeout;
-
-  document.addEventListener('scroll', () => {
-    const scrollTopPosition = window.scrollY || document.documentElement.scrollTop;
-
-    if (navWrapper.matches(':hover')) {
-      return;
-    }
-
-    if (scrollTopPosition > lastScrollTop && !navWrapper.classList.contains('hide')) {
-      showHeaderTimeout = setTimeout(() => navWrapper.classList.add('hide'), 800);
-    } else if (scrollTopPosition < lastScrollTop || scrollTopPosition === 0) {
-      clearTimeout(showHeaderTimeout);
-      navWrapper.classList.remove('hide');
-    }
-    lastScrollTop = scrollTopPosition <= 0 ? 0 : scrollTopPosition;
-  });
 }
