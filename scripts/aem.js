@@ -693,23 +693,27 @@ function preloadHeroImage() {
   const head = document.querySelector('head');
   const main = document.querySelector('main');
   const img = document.querySelector('img');
-  const documentPicture = document.querySelector('picture');
-  if(documentPicture !== null){
-    documentPicture.replaceWith(createOptimizedPicture('hero', img.src, img.alt, true));
-  }
-  const picture = main.querySelector('picture');
+  const picture = main ? main.querySelector('picture') : null;
 
-  [...picture.querySelectorAll('source')].forEach((source) => {
-    if (source.type === 'image/webp') {
-      const link = document.createElement('link');
-      link.setAttribute('rel', 'preload');
-      link.setAttribute('as', 'image');
-      link.setAttribute('type', 'image/webp');
-      link.setAttribute('href', source.srcset);
-      link.setAttribute('media', source.media);
-      head.append(link);
+  if (picture) {
+    document.querySelector('picture').replaceWith(createOptimizedPicture('hero', img ? img.src : '', img ? img.alt : '', true));
+
+    const sources = picture.querySelectorAll('source');
+
+    if (sources.length > 0) {
+      [...sources].forEach((source) => {
+        if (source.type === 'image/webp') {
+          const link = document.createElement('link');
+          link.setAttribute('rel', 'preload');
+          link.setAttribute('as', 'image');
+          link.setAttribute('type', 'image/webp');
+          link.setAttribute('href', source.srcset);
+          link.setAttribute('media', source.media);
+          head.append(link);
+        }
+      });
     }
-  });
+  }
 }
 
 /**
