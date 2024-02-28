@@ -693,7 +693,10 @@ function preloadHeroImage() {
   const head = document.querySelector('head');
   const main = document.querySelector('main');
   const img = document.querySelector('img');
-  document.querySelector('picture').replaceWith(createOptimizedPicture('hero', img.src, img.alt, true));
+  const documentPicture = document.querySelector('picture');
+  if(documentPicture !== null){
+    documentPicture.replaceWith(createOptimizedPicture('hero', img.src, img.alt, true));
+  }
   const picture = main.querySelector('picture');
 
   [...picture.querySelectorAll('source')].forEach((source) => {
