@@ -292,7 +292,7 @@ export async function decorateTeaser() {
   const table = '<div class="product-teaser block" data-block-name="product-teaser" data-block-status="loading">' +
                                        '<div>' +
                                          '<div>SKU</div>' +
-                                         '<div>MS06</div>' +
+                                         '<div>24-MB02</div>' +
                                        '</div>' +
                                        '<div>' +
                                          '<div>Details Button</div>' +
