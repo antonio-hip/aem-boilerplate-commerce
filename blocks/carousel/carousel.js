@@ -86,7 +86,7 @@ async function createCarousel(block) {
           '                    <td>true</td>\n' +
           '                  </tr>\n' +
           '                </tbody>\n' +
-          '              </table>')M
+          '              </table>')
         const productTeaser = await decorateTeaser(teaserBlock);
         picture.replaceWith(productTeaser);
       } else {
