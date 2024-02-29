@@ -65,8 +65,7 @@ async function createCarousel(block) {
 
     // eslint-disable-next-line no-restricted-syntax
     for (const picture of pictures) {
-      const teaserBlock = buildBlock('product-teaser', '<table>\n' +
-        '                <tbody>\n' +
+      const teaserBlock = buildBlock('product-teaser', '<tbody>\n' +
         '                  <tr>\n' +
         '                    <td colspan="2"><strong>Product Teaser</strong></td>\n' +
         '                  </tr>\n' +
@@ -82,8 +81,7 @@ async function createCarousel(block) {
         '                    <td>Cart Button</td>\n' +
         '                    <td>true</td>\n' +
         '                  </tr>\n' +
-        '                </tbody>\n' +
-        '              </table>');
+        '                </tbody>');
       const img = picture.querySelector('img');
       if (carouselSliderOption) {
         // eslint-disable-next-line no-await-in-loop,no-use-before-define
