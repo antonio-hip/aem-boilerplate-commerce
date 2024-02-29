@@ -67,8 +67,7 @@ async function createCarousel(block) {
     for (const picture of pictures) {
       const img = picture.querySelector('img');
       if (carouselSliderOption) {
-        // eslint-disable-next-line no-use-before-define,no-await-in-loop
-        const teaserBlock = buildBlock("product-teaser", '<table>\n' +
+        const teaserBlock = buildBlock('product-teaser', '<table>\n' +
           '                <tbody>\n' +
           '                  <tr>\n' +
           '                    <td colspan="2"><strong>Product Teaser</strong></td>\n' +
@@ -86,7 +85,8 @@ async function createCarousel(block) {
           '                    <td>true</td>\n' +
           '                  </tr>\n' +
           '                </tbody>\n' +
-          '              </table>')
+          '              </table>');
+        // eslint-disable-next-line no-await-in-loop,no-use-before-define
         const productTeaser = await decorateTeaser(teaserBlock);
         picture.replaceWith(productTeaser);
       } else {
