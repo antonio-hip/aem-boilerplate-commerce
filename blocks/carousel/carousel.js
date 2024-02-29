@@ -46,10 +46,10 @@ fragment priceFields on ProductViewPrice {
   }
 }`;
 
-function createCarousel() {
+async function createCarousel() {
   const carouselWrappers = document.querySelectorAll('.carousel-wrapper');
 
-  carouselWrappers.forEach((carouselWrapper) => {
+  for (const carouselWrapper of carouselWrappers) {
     const carousel = carouselWrapper.querySelector('.carousel');
     const carouselContainer = carouselWrapper.parentElement;
     const carouselSliderOption = carouselContainer.classList.contains('slider');
@@ -63,24 +63,25 @@ function createCarousel() {
 
     const pictures = [...carousel.querySelectorAll(':scope > div > div > table')];
 
-    pictures.forEach((picture) => {
+    // eslint-disable-next-line no-restricted-syntax
+    for (const picture of pictures) {
       const img = picture.querySelector('img');
       if (carouselSliderOption) {
-        // eslint-disable-next-line no-use-before-define
-        const productTeaser = decorateTeaser()
+        // eslint-disable-next-line no-use-before-define,no-await-in-loop
+        const productTeaser = await decorateTeaser();
         picture.replaceWith(productTeaser);
       } else {
-        // eslint-disable-next-line no-use-before-define
-        const productTeaser = decorateTeaser()
+        // eslint-disable-next-line no-use-before-define,no-await-in-loop
+        const productTeaser = await decorateTeaser();
         picture.replaceWith(productTeaser);
       }
-    });
+    }
 
     const numSlides = [...carousel.querySelectorAll(':scope > div > div')].length;
 
     if (numSlides > 1) {
       if (carouselWrapper.querySelectorAll('.arrow').length === 2) {
-        return;
+        continue;
       }
 
       const arrowsWrapper = document.createElement('div');
@@ -193,7 +194,7 @@ function createCarousel() {
     } else {
       carouselWrapper.classList.add('carousel-single-slide');
     }
-  });
+  }
 }
 
 export default async function decorate() {
