@@ -67,80 +67,13 @@ function createCarousel() {
       const img = picture.querySelector('img');
       if (carouselSliderOption) {
         // eslint-disable-next-line no-use-before-define
-
-          const table = '<div class="product-teaser block" data-block-name="product-teaser" data-block-status="loading">' +
-                                               '<div>' +
-                                                 '<div>SKU</div>' +
-                                                 '<div>MS06</div>' +
-                                               '</div>' +
-                                               '<div>' +
-                                                 '<div>Details Button</div>' +
-                                                 '<div>true</div>' +
-                                               '</div>' +
-                                               '<div>' +
-                                                 '<div>Cart Button</div>' +
-                                                 '<div>true</div>' +
-                                               '</div>' +
-                                             '</div>';
-          const blockWithDic = document.createElement('div');
-          blockWithDic.innerHTML = table;
-          const block = blockWithDic.firstChild;
-          const config = readBlockConfig(block);
-          config['details-button'] = !!(config['details-button'] || config['details-button'] === 'true');
-          config['cart-button'] = !!(config['cart-button'] || config['cart-button'] === 'true');
-
-          renderPlaceholder(config, block);
-
-          const { products } = await performCatalogServiceQuery(productTeaserQuery, {
-            sku: config.sku,
-          });
-          if (!products || !products.length > 0 || !products[0].sku) {
-            return;
-          }
-          const [product] = products;
-          product.images = product.images.map((image) => ({ ...image, url: image.url.replace(/^https?:/, '') }));
-
-          renderProduct(product, config, block);
-
-        picture.replaceWith('bok');
+        const productTeaser = decorateTeaser()
+        picture.replaceWith(productTeaser);
       } else {
         // eslint-disable-next-line no-use-before-define
-          const table = '<div class="product-teaser block" data-block-name="product-teaser" data-block-status="loading">' +
-                                               '<div>' +
-                                                 '<div>SKU</div>' +
-                                                 '<div>MS06</div>' +
-                                               '</div>' +
-                                               '<div>' +
-                                                 '<div>Details Button</div>' +
-                                                 '<div>true</div>' +
-                                               '</div>' +
-                                               '<div>' +
-                                                 '<div>Cart Button</div>' +
-                                                 '<div>true</div>' +
-                                               '</div>' +
-                                             '</div>';
-          const blockWithDic = document.createElement('div');
-          blockWithDic.innerHTML = table;
-          const block = blockWithDic.firstChild;
-          const config = readBlockConfig(block);
-          config['details-button'] = !!(config['details-button'] || config['details-button'] === 'true');
-          config['cart-button'] = !!(config['cart-button'] || config['cart-button'] === 'true');
-
-          renderPlaceholder(config, block);
-
-          const { products } = await performCatalogServiceQuery(productTeaserQuery, {
-            sku: config.sku,
-          });
-          if (!products || !products.length > 0 || !products[0].sku) {
-            return;
-          }
-          const [product] = products;
-          product.images = product.images.map((image) => ({ ...image, url: image.url.replace(/^https?:/, '') }));
-
-          renderProduct(product, config, block);
-        }
-        picture.replaceWith('bok');
-
+        const productTeaser = decorateTeaser()
+        picture.replaceWith(productTeaser);
+      }
     });
 
     const numSlides = [...carousel.querySelectorAll(':scope > div > div')].length;
@@ -352,4 +285,40 @@ function renderProduct(product, config, block) {
   }
 
   block.appendChild(fragment);
+}
+
+export async function decorateTeaser() {
+  const table = '<div class="product-teaser block" data-block-name="product-teaser" data-block-status="loading">' +
+                                       '<div>' +
+                                         '<div>SKU</div>' +
+                                         '<div>MS06</div>' +
+                                       '</div>' +
+                                       '<div>' +
+                                         '<div>Details Button</div>' +
+                                         '<div>true</div>' +
+                                       '</div>' +
+                                       '<div>' +
+                                         '<div>Cart Button</div>' +
+                                         '<div>true</div>' +
+                                       '</div>' +
+                                     '</div>';
+  const blockWithDic = document.createElement('div');
+  blockWithDic.innerHTML = table;
+  const block = blockWithDic.firstChild;
+  const config = readBlockConfig(block);
+  config['details-button'] = !!(config['details-button'] || config['details-button'] === 'true');
+  config['cart-button'] = !!(config['cart-button'] || config['cart-button'] === 'true');
+
+  renderPlaceholder(config, block);
+
+  const { products } = await performCatalogServiceQuery(productTeaserQuery, {
+    sku: config.sku,
+  });
+  if (!products || !products.length > 0 || !products[0].sku) {
+    return;
+  }
+  const [product] = products;
+  product.images = product.images.map((image) => ({ ...image, url: image.url.replace(/^https?:/, '') }));
+
+  renderProduct(product, config, block);
 }
