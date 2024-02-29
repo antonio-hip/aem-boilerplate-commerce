@@ -65,7 +65,9 @@ async function createCarousel(block) {
 
     // eslint-disable-next-line no-restricted-syntax
     for (const picture of pictures) {
-      const table = '<table>' +
+      const div = document.createElement('div');
+
+      div.innerHTML = '<table>' +
         '  <tbody>' +
         '    <tr>' +
         '      <td colspan="2"><strong>Product Teaser</strong></td>' +
@@ -85,7 +87,7 @@ async function createCarousel(block) {
         '  </tbody>' +
         '</table>';
       // eslint-disable-next-line no-use-before-define
-      const teaserBlock = buildProductTeaserBlock(table);
+      const teaserBlock = buildProductTeaserBlock(div.firstChild);
       const img = picture.querySelector('img');
       if (carouselSliderOption) {
         // eslint-disable-next-line no-await-in-loop,no-use-before-define
