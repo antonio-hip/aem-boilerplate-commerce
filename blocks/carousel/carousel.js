@@ -65,11 +65,11 @@ function createCarousel(block) {
       const img = picture.querySelector('img');
       if (carouselSliderOption) {
         // eslint-disable-next-line no-use-before-define
-        const productTeaser = decorateTeaser(block);
+        const productTeaser = '<h1>booook<h1>'
         picture.replaceWith(productTeaser);
       } else {
         // eslint-disable-next-line no-use-before-define
-        const productTeaser = decorateTeaser(block);
+        const productTeaser ='<h1>booook<h1>'
         picture.replaceWith(productTeaser);
       }
     });
