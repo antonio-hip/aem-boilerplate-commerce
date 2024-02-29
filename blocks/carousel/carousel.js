@@ -67,11 +67,11 @@ function createCarousel() {
       const img = picture.querySelector('img');
       if (carouselSliderOption) {
         // eslint-disable-next-line no-use-before-define
-        const productTeaser = decorateTeaser()
+        const productTeaser = decorateTeaser();
         picture.replaceWith(productTeaser);
       } else {
         // eslint-disable-next-line no-use-before-define
-        const productTeaser = decorateTeaser()
+        const productTeaser = decorateTeaser();
         picture.replaceWith(productTeaser);
       }
     });
@@ -284,7 +284,7 @@ function renderProduct(product, config, block) {
     });
   }
 
-  return block.appendChild(fragment);
+  return fragment;
 }
 
 export async function decorateTeaser() {
@@ -323,5 +323,6 @@ export async function decorateTeaser() {
   const html = renderProduct(product, config, block);
   const htmlElem = document.createElement('div');
   htmlElem.innerHTML = html;
+  // eslint-disable-next-line consistent-return
   return htmlElem;
 }
