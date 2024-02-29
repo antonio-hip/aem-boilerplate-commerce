@@ -91,7 +91,7 @@ function createCarousel() {
 
           renderPlaceholder(config, block);
 
-          const { products } = performCatalogServiceQuery(productTeaserQuery, {
+          const { products } = await performCatalogServiceQuery(productTeaserQuery, {
             sku: config.sku,
           });
           if (!products || !products.length > 0 || !products[0].sku) {
