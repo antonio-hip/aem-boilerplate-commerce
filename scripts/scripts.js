@@ -26,8 +26,8 @@ function buildHeroBlock(main) {
   const h1 = main.querySelector('h1');
   const picture = main.querySelector('picture');
   if (h1 && picture && p
-      // eslint-disable-next-line no-bitwise
-      && (h1.compareDocumentPosition(picture) & Node.DOCUMENT_POSITION_PRECEDING)) {
+    // eslint-disable-next-line no-bitwise
+    && (h1.compareDocumentPosition(picture) & Node.DOCUMENT_POSITION_PRECEDING)) {
     const section = document.createElement('div');
     const text = document.createElement('div');
     text.append(h1);
@@ -90,18 +90,19 @@ function calculateTabSectionCoordinates(main) {
   let lastTabIndex = -1;
   let foldedTabsCounter = 0;
   const mainSections = [...main.children];
-  main.querySelectorAll('div.section[data-tab-title]').forEach((section) => {
-    const currentSectionIndex = mainSections.indexOf(section);
+  main.querySelectorAll('div.section[data-tab-title]')
+    .forEach((section) => {
+      const currentSectionIndex = mainSections.indexOf(section);
 
-    if (lastTabIndex < 0 || currentSectionIndex - foldedTabsCounter !== lastTabIndex) {
-      // we construct a new tabs component, at the currentSectionIndex
-      lastTabIndex = currentSectionIndex;
-      foldedTabsCounter = 0;
-    }
+      if (lastTabIndex < 0 || currentSectionIndex - foldedTabsCounter !== lastTabIndex) {
+        // we construct a new tabs component, at the currentSectionIndex
+        lastTabIndex = currentSectionIndex;
+        foldedTabsCounter = 0;
+      }
 
-    foldedTabsCounter += 1;
-    calculateTabSectionCoordinate(lastTabIndex, section);
-  });
+      foldedTabsCounter += 1;
+      calculateTabSectionCoordinate(lastTabIndex, section);
+    });
 }
 
 async function autoBlockTabComponent(main, targetIndex, tabSections) {
@@ -117,10 +118,10 @@ async function autoBlockTabComponent(main, targetIndex, tabSections) {
   tabContentsWrapper.setAttribute('class', 'contents-wrapper');
 
   if (
-      main.children[targetIndex].previousElementSibling.children.length === 1
-      && main.children[targetIndex].previousElementSibling.children[0].classList.contains(
-          'default-content-wrapper',
-      )
+    main.children[targetIndex].previousElementSibling.children.length === 1
+    && main.children[targetIndex].previousElementSibling.children[0].classList.contains(
+      'default-content-wrapper',
+    )
   ) {
     const tabsMainPrevElement = main.children[targetIndex].previousElementSibling;
     const tabsMainText = tabsMainPrevElement.children[0].cloneNode(true);
@@ -144,10 +145,10 @@ async function autoBlockTabComponent(main, targetIndex, tabSections) {
   await loadBlock(tabsBlock);
 
   if (
-      main.children[targetIndex].previousElementSibling.children.length === 1
-      && main.children[targetIndex].previousElementSibling.children[0].classList.contains(
-          'default-content-wrapper',
-      )
+    main.children[targetIndex].previousElementSibling.children.length === 1
+    && main.children[targetIndex].previousElementSibling.children[0].classList.contains(
+      'default-content-wrapper',
+    )
   ) {
     main.children[targetIndex].previousElementSibling.remove();
   }
@@ -157,11 +158,71 @@ function aggregateTabSectionsIntoComponents(main) {
   calculateTabSectionCoordinates(main);
 
   let sectionIndexDelta = 0;
-  Object.keys(tabElementMap).map(async (tabComponentIndex) => {
-    const tabSections = tabElementMap[tabComponentIndex];
-    await autoBlockTabComponent(main, tabComponentIndex - sectionIndexDelta, tabSections);
-    sectionIndexDelta = tabSections.length - 1;
-  });
+  Object.keys(tabElementMap)
+    .map(async (tabComponentIndex) => {
+      const tabSections = tabElementMap[tabComponentIndex];
+      await autoBlockTabComponent(main, tabComponentIndex - sectionIndexDelta, tabSections);
+      sectionIndexDelta = tabSections.length - 1;
+    });
+}
+
+export async function fetchIndex(indexFile, pageSize = 500) {
+  const handleIndex = async (offset) => {
+    const resp = await fetch(`/${indexFile}.json?limit=${pageSize}&offset=${offset}`);
+    const json = await resp.json();
+
+    const newIndex = {
+      complete: (json.limit + json.offset) === json.total,
+      offset: json.offset + pageSize,
+      promise: null,
+      data: [...window.index[indexFile].data, ...json.data],
+    };
+
+    return newIndex;
+  };
+
+  window.index = window.index || {};
+  window.index[indexFile] = window.index[indexFile] || {
+    data: [],
+    offset: 0,
+    complete: false,
+    promise: null,
+  };
+
+  // Return index if already loaded
+  if (window.index[indexFile].complete) {
+    return window.index[indexFile];
+  }
+
+  // Return promise if index is currently loading
+  if (window.index[indexFile].promise) {
+    return window.index[indexFile].promise;
+  }
+
+  window.index[indexFile].promise = handleIndex(window.index[indexFile].offset);
+  const newIndex = await (window.index[indexFile].promise);
+  window.index[indexFile] = newIndex;
+
+  return newIndex;
+}
+
+/**
+ * Loads a fragment.
+ * @param {string} path The path to the fragment
+ * @returns {HTMLElement} The root element of the fragment
+ */
+export async function loadFragment(path) {
+  if (path && path.startsWith('/')) {
+    const resp = await fetch(`${path}.plain.html`);
+    if (resp.ok) {
+      const main = document.createElement('main');
+      main.innerHTML = await resp.text();
+      decorateMain(main);
+      await loadBlocks(main);
+      return main;
+    }
+  }
+  return null;
 }
 
 /**

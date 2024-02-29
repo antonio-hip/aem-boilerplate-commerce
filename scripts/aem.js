@@ -24,15 +24,21 @@
 function sampleRUM(checkpoint, data = {}) {
   sampleRUM.defer = sampleRUM.defer || [];
   const defer = (fnname) => {
-    sampleRUM[fnname] = sampleRUM[fnname] || ((...args) => sampleRUM.defer.push({ fnname, args }));
+    sampleRUM[fnname] = sampleRUM[fnname] || ((...args) => sampleRUM.defer.push({
+      fnname,
+      args,
+    }));
   };
   sampleRUM.drain = sampleRUM.drain
-      || ((dfnname, fn) => {
-        sampleRUM[dfnname] = fn;
-        sampleRUM.defer
-            .filter(({ fnname }) => dfnname === fnname)
-            .forEach(({ fnname, args }) => sampleRUM[fnname](...args));
-      });
+    || ((dfnname, fn) => {
+      sampleRUM[dfnname] = fn;
+      sampleRUM.defer
+        .filter(({ fnname }) => dfnname === fnname)
+        .forEach(({
+          fnname,
+          args,
+        }) => sampleRUM[fnname](...args));
+    });
   sampleRUM.always = sampleRUM.always || [];
   sampleRUM.always.on = (chkpnt, fn) => {
     sampleRUM.always[chkpnt] = fn;
@@ -48,9 +54,9 @@ function sampleRUM(checkpoint, data = {}) {
       const usp = new URLSearchParams(window.location.search);
       const weight = usp.get('rum') === 'on' ? 1 : 100; // with parameter, weight is 1. Defaults to 100.
       const id = Array.from({ length: 75 }, (_, i) => String.fromCharCode(48 + i))
-          .filter((a) => /\d|[A-Z]/i.test(a))
-          .filter(() => Math.random() * 75 > 70)
-          .join('');
+        .filter((a) => /\d|[A-Z]/i.test(a))
+        .filter(() => Math.random() * 75 > 70)
+        .join('');
       const random = Math.random();
       const isSelected = random * weight < 1;
       const firstReadTime = Date.now();
@@ -70,7 +76,11 @@ function sampleRUM(checkpoint, data = {}) {
         sanitizeURL: urlSanitizers[window.hlx.RUM_MASK_URL || 'path'],
       };
     }
-    const { weight, id, firstReadTime } = window.hlx.rum;
+    const {
+      weight,
+      id,
+      firstReadTime,
+    } = window.hlx.rum;
     if (window.hlx && window.hlx.rum && window.hlx.rum.isSelected) {
       const knownProperties = [
         'weight',
@@ -89,15 +99,15 @@ function sampleRUM(checkpoint, data = {}) {
       const sendPing = (pdata = data) => {
         // eslint-disable-next-line object-curly-newline, max-len, no-use-before-define
         const body = JSON.stringify(
-            {
-              weight,
-              id,
-              referer: window.hlx.rum.sanitizeURL(),
-              checkpoint,
-              t: Date.now() - firstReadTime,
-              ...data,
-            },
-            knownProperties,
+          {
+            weight,
+            id,
+            referer: window.hlx.rum.sanitizeURL(),
+            checkpoint,
+            t: Date.now() - firstReadTime,
+            ...data,
+          },
+          knownProperties,
         );
         const url = `https://rum.hlx.page/.rum/${weight}`;
         // eslint-disable-next-line no-unused-expressions
@@ -159,11 +169,17 @@ function init() {
   window.addEventListener('load', () => sampleRUM('load'));
 
   window.addEventListener('unhandledrejection', (event) => {
-    sampleRUM('error', { source: event.reason.sourceURL, target: event.reason.line });
+    sampleRUM('error', {
+      source: event.reason.sourceURL,
+      target: event.reason.line,
+    });
   });
 
   window.addEventListener('error', (event) => {
-    sampleRUM('error', { source: event.filename, target: event.lineno });
+    sampleRUM('error', {
+      source: event.filename,
+      target: event.lineno,
+    });
   });
 }
 
@@ -174,12 +190,12 @@ function init() {
  */
 function toClassName(name) {
   return typeof name === 'string'
-      ? name
-          .toLowerCase()
-          .replace(/[^0-9a-z]/gi, '-')
-          .replace(/-+/g, '-')
-          .replace(/^-|-$/g, '')
-      : '';
+    ? name
+      .toLowerCase()
+      .replace(/[^0-9a-z]/gi, '-')
+      .replace(/-+/g, '-')
+      .replace(/^-|-$/g, '')
+    : '';
 }
 
 /**
@@ -188,7 +204,8 @@ function toClassName(name) {
  * @returns {string} The camelCased name
  */
 function toCamelCase(name) {
-  return toClassName(name).replace(/-([a-z])/g, (g) => g[1].toUpperCase());
+  return toClassName(name)
+    .replace(/-([a-z])/g, (g) => g[1].toUpperCase());
 }
 
 /**
@@ -199,39 +216,42 @@ function toCamelCase(name) {
 // eslint-disable-next-line import/prefer-default-export
 function readBlockConfig(block) {
   const config = {};
-  block.querySelectorAll(':scope > div').forEach((row) => {
-    if (row.children) {
-      const cols = [...row.children];
-      if (cols[1]) {
-        const col = cols[1];
-        const name = toClassName(cols[0].textContent);
-        let value = '';
-        if (col.querySelector('a')) {
-          const as = [...col.querySelectorAll('a')];
-          if (as.length === 1) {
-            value = as[0].href;
+  block.querySelectorAll(':scope > div')
+    .forEach((row) => {
+      if (row.children) {
+        const cols = [...row.children];
+        if (cols[1]) {
+          const col = cols[1];
+          const name = toClassName(cols[0].textContent);
+          let value = '';
+          if (col.querySelector('a')) {
+            const as = [...col.querySelectorAll('a')];
+            if (as.length === 1) {
+              value = as[0].href;
+            } else {
+              value = as.map((a) => a.href);
+            }
+          } else if (col.querySelector('img')) {
+            const imgs = [...col.querySelectorAll('img')];
+            if (imgs.length === 1) {
+              value = imgs[0].src;
+            } else {
+              value = imgs.map((img) => img.src);
+            }
+          } else if (col.querySelector('p')) {
+            const ps = [...col.querySelectorAll('p')];
+            if (ps.length === 1) {
+              value = ps[0].textContent;
+            } else {
+              value = ps.map((p) => p.textContent);
+            }
           } else {
-            value = as.map((a) => a.href);
+            value = row.children[1].textContent;
           }
-        } else if (col.querySelector('img')) {
-          const imgs = [...col.querySelectorAll('img')];
-          if (imgs.length === 1) {
-            value = imgs[0].src;
-          } else {
-            value = imgs.map((img) => img.src);
-          }
-        } else if (col.querySelector('p')) {
-          const ps = [...col.querySelectorAll('p')];
-          if (ps.length === 1) {
-            value = ps[0].textContent;
-          } else {
-            value = ps.map((p) => p.textContent);
-          }
-        } else value = row.children[1].textContent;
-        config[name] = value;
+          config[name] = value;
+        }
       }
-    }
-  });
+    });
   return config;
 }
 
@@ -288,8 +308,8 @@ async function loadScript(src, attrs) {
 function getMetadata(name, doc = document) {
   const attr = name && name.includes(':') ? 'property' : 'name';
   const meta = [...doc.head.querySelectorAll(`meta[${attr}="${name}"]`)]
-      .map((m) => m.content)
-      .join(', ');
+    .map((m) => m.content)
+    .join(', ');
   return meta || '';
 }
 
@@ -303,15 +323,24 @@ function getMetadata(name, doc = document) {
  */
 
 function createOptimizedPicture(
-    tag,
-    src,
-    alt = '',
-    eager = false,
-    breakpoints = [
-      { media: '(min-width: 900px)', width: '1024' },
-      { media: '(max-width: 600px)', width: '540' },
-      { media: '(max-width: 375px)', width: '375' },
-    ],
+  tag,
+  src,
+  alt = '',
+  eager = false,
+  breakpoints = [
+    {
+      media: '(min-width: 900px)',
+      width: '1024',
+    },
+    {
+      media: '(max-width: 600px)',
+      width: '540',
+    },
+    {
+      media: '(max-width: 375px)',
+      width: '375',
+    },
+  ],
 ) {
   const url = new URL(src, window.location.href);
   const picture = document.createElement('picture');
@@ -321,11 +350,20 @@ function createOptimizedPicture(
   let breakpointsTags = breakpoints;
 
   if (tag === 'imagetext') {
-    breakpointsTags = [{ media: '', width: '1440' }];
+    breakpointsTags = [{
+      media: '',
+      width: '1440',
+    }];
   } else if (tag === 'carousel-slider') {
     breakpointsTags = [
-      { media: '(min-width: 600px)', width: '1024' },
-      { media: '(max-width: 375px)', width: '375' },
+      {
+        media: '(min-width: 600px)',
+        width: '1024',
+      },
+      {
+        media: '(max-width: 375px)',
+        width: '375',
+      },
     ];
   }
 
@@ -363,9 +401,10 @@ function createOptimizedPicture(
  */
 function decorateTemplateAndTheme() {
   const addClasses = (element, classes) => {
-    classes.split(',').forEach((c) => {
-      element.classList.add(toClassName(c.trim()));
-    });
+    classes.split(',')
+      .forEach((c) => {
+        element.classList.add(toClassName(c.trim()));
+      });
   };
   const template = getMetadata('template');
   if (template) addClasses(document.body, template);
@@ -378,47 +417,48 @@ function decorateTemplateAndTheme() {
  * @param {Element} element container element
  */
 function decorateButtons(element) {
-  element.querySelectorAll('a').forEach((a) => {
-    a.title = a.title || a.textContent;
-    if (a.href !== a.textContent) {
-      const up = a.parentElement;
-      const twoup = a.parentElement.parentElement;
-      if (!a.querySelector('img')) {
-        if (up.childNodes.length === 1 && (up.tagName === 'P' || up.tagName === 'DIV')) {
-          const buttonIcon = document.createElement('span');
-          buttonIcon.className = 'icon-span';
-          fetch('/icons/globe.svg')
+  element.querySelectorAll('a')
+    .forEach((a) => {
+      a.title = a.title || a.textContent;
+      if (a.href !== a.textContent) {
+        const up = a.parentElement;
+        const twoup = a.parentElement.parentElement;
+        if (!a.querySelector('img')) {
+          if (up.childNodes.length === 1 && (up.tagName === 'P' || up.tagName === 'DIV')) {
+            const buttonIcon = document.createElement('span');
+            buttonIcon.className = 'icon-span';
+            fetch('/icons/globe.svg')
               .then((response) => response.text())
               .then((svgContent) => {
                 buttonIcon.innerHTML = svgContent;
               });
 
-          a.className = 'button'; // default
-          up.classList.add('button-container');
-          a.prepend(buttonIcon);
-        }
+            a.className = 'button'; // default
+            up.classList.add('button-container');
+            a.prepend(buttonIcon);
+          }
 
-        if (
+          if (
             up.childNodes.length === 1
             && up.tagName === 'STRONG'
             && twoup.childNodes.length === 1
             && twoup.tagName === 'P'
-        ) {
-          a.className = 'button primary';
-          twoup.classList.add('button-container');
-        }
-        if (
+          ) {
+            a.className = 'button primary';
+            twoup.classList.add('button-container');
+          }
+          if (
             up.childNodes.length === 1
             && up.tagName === 'EM'
             && twoup.childNodes.length === 1
             && twoup.tagName === 'P'
-        ) {
-          a.className = 'button secondary';
-          twoup.classList.add('button-container');
+          ) {
+            a.className = 'button secondary';
+            twoup.classList.add('button-container');
+          }
         }
       }
-    }
-  });
+    });
 }
 
 /**
@@ -429,8 +469,8 @@ function decorateButtons(element) {
  */
 function decorateIcon(span, prefix = '', alt = '') {
   const iconName = Array.from(span.classList)
-      .find((c) => c.startsWith('icon-'))
-      .substring(5);
+    .find((c) => c.startsWith('icon-'))
+    .substring(5);
   const img = document.createElement('img');
   img.dataset.iconName = iconName;
   img.src = `${window.hlx.codeBasePath}${prefix}/icons/${iconName}.svg`;
@@ -456,44 +496,46 @@ function decorateIcons(element, prefix = '') {
  * @param {Element} main The container element
  */
 function decorateSections(main) {
-  main.querySelectorAll(':scope > div').forEach((section) => {
-    const wrappers = [];
-    let defaultContent = false;
-    [...section.children].forEach((e) => {
-      if (e.tagName === 'DIV' || !defaultContent) {
-        const wrapper = document.createElement('div');
-        wrappers.push(wrapper);
-        defaultContent = e.tagName !== 'DIV';
-        if (defaultContent) wrapper.classList.add('default-content-wrapper');
-      }
-      wrappers[wrappers.length - 1].append(e);
-    });
-    wrappers.forEach((wrapper) => section.append(wrapper));
-    section.classList.add('section');
-    section.dataset.sectionStatus = 'initialized';
-    section.style.display = 'none';
-
-    // Process section metadata
-    const sectionMeta = section.querySelector('div.section-metadata');
-    if (sectionMeta) {
-      const meta = readBlockConfig(sectionMeta);
-      Object.keys(meta).forEach((key) => {
-        if (key === 'style') {
-          const styles = meta.style
-              .split(',')
-              .filter((style) => style)
-              .map((style) => toClassName(style.trim()));
-          styles.forEach((style) => section.classList.add(style));
-        } else if (key === 'id') {
-          const id = toClassName(meta.id.trim());
-          section.setAttribute('id', id);
-        } else {
-          section.dataset[toCamelCase(key)] = meta[key];
+  main.querySelectorAll(':scope > div')
+    .forEach((section) => {
+      const wrappers = [];
+      let defaultContent = false;
+      [...section.children].forEach((e) => {
+        if (e.tagName === 'DIV' || !defaultContent) {
+          const wrapper = document.createElement('div');
+          wrappers.push(wrapper);
+          defaultContent = e.tagName !== 'DIV';
+          if (defaultContent) wrapper.classList.add('default-content-wrapper');
         }
+        wrappers[wrappers.length - 1].append(e);
       });
-      sectionMeta.parentNode.remove();
-    }
-  });
+      wrappers.forEach((wrapper) => section.append(wrapper));
+      section.classList.add('section');
+      section.dataset.sectionStatus = 'initialized';
+      section.style.display = 'none';
+
+      // Process section metadata
+      const sectionMeta = section.querySelector('div.section-metadata');
+      if (sectionMeta) {
+        const meta = readBlockConfig(sectionMeta);
+        Object.keys(meta)
+          .forEach((key) => {
+            if (key === 'style') {
+              const styles = meta.style
+                .split(',')
+                .filter((style) => style)
+                .map((style) => toClassName(style.trim()));
+              styles.forEach((style) => section.classList.add(style));
+            } else if (key === 'id') {
+              const id = toClassName(meta.id.trim());
+              section.setAttribute('id', id);
+            } else {
+              section.dataset[toCamelCase(key)] = meta[key];
+            }
+          });
+        sectionMeta.parentNode.remove();
+      }
+    });
 }
 
 /**
@@ -507,27 +549,27 @@ async function fetchPlaceholders(prefix = 'default') {
   if (!window.placeholders[prefix]) {
     window.placeholders[prefix] = new Promise((resolve) => {
       fetch(`${prefix === 'default' ? '' : prefix}/placeholders.json`)
-          .then((resp) => {
-            if (resp.ok) {
-              return resp.json();
-            }
-            return {};
-          })
-          .then((json) => {
-            const placeholders = {};
-            json.data
-                .filter((placeholder) => placeholder.Key)
-                .forEach((placeholder) => {
-                  placeholders[toCamelCase(placeholder.Key)] = placeholder.Text;
-                });
-            window.placeholders[prefix] = placeholders;
-            resolve(window.placeholders[prefix]);
-          })
-          .catch(() => {
-            // error loading placeholders
-            window.placeholders[prefix] = {};
-            resolve(window.placeholders[prefix]);
-          });
+        .then((resp) => {
+          if (resp.ok) {
+            return resp.json();
+          }
+          return {};
+        })
+        .then((json) => {
+          const placeholders = {};
+          json.data
+            .filter((placeholder) => placeholder.Key)
+            .forEach((placeholder) => {
+              placeholders[toCamelCase(placeholder.Key)] = placeholder.Text;
+            });
+          window.placeholders[prefix] = placeholders;
+          resolve(window.placeholders[prefix]);
+        })
+        .catch(() => {
+          // error loading placeholders
+          window.placeholders[prefix] = {};
+          resolve(window.placeholders[prefix]);
+        });
     });
   }
   return window.placeholders[`${prefix}`];
@@ -544,7 +586,7 @@ function updateSectionsStatus(main) {
     const status = section.dataset.sectionStatus;
     if (status !== 'loaded') {
       const loadingBlock = section.querySelector(
-          '.block[data-block-status="initialized"], .block[data-block-status="loading"]',
+        '.block[data-block-status="initialized"], .block[data-block-status="loading"]',
       );
       if (loadingBlock) {
         section.dataset.sectionStatus = 'loading';
@@ -603,8 +645,8 @@ async function loadBlock(block) {
         (async () => {
           try {
             const mod = await import(
-                `${window.hlx.codeBasePath}/blocks/${blockName}/${blockName}.js`
-                );
+              `${window.hlx.codeBasePath}/blocks/${blockName}/${blockName}.js`
+            );
             if (mod.default) {
               await mod.default(block);
             }
@@ -661,7 +703,8 @@ function decorateBlock(block) {
  * @param {Element} main The container element
  */
 function decorateBlocks(main) {
-  main.querySelectorAll('div.section > div > div').forEach(decorateBlock);
+  main.querySelectorAll('div.section > div > div')
+    .forEach(decorateBlock);
 }
 
 /**
@@ -696,7 +739,8 @@ function preloadHeroImage() {
   const picture = main ? main.querySelector('picture') : null;
 
   if (picture) {
-    document.querySelector('picture').replaceWith(createOptimizedPicture('hero', img ? img.src : '', img ? img.alt : '', true));
+    document.querySelector('picture')
+      .replaceWith(createOptimizedPicture('hero', img ? img.src : '', img ? img.alt : '', true));
 
     const sources = picture.querySelectorAll('source');
 
