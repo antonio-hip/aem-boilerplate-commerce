@@ -284,7 +284,7 @@ function renderProduct(product, config, block) {
     });
   }
 
-  block.appendChild(fragment);
+  return block.appendChild(fragment);
 }
 
 export async function decorateTeaser() {
@@ -320,5 +320,8 @@ export async function decorateTeaser() {
   const [product] = products;
   product.images = product.images.map((image) => ({ ...image, url: image.url.replace(/^https?:/, '') }));
 
-  renderProduct(product, config, block);
+  const html = renderProduct(product, config, block);
+  const htmlElem = document.createElement('div');
+  htmlElem.innerHTML = html;
+  return htmlElem;
 }
