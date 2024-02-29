@@ -304,7 +304,7 @@ export async function decorateTeaser() {
                                      '</div>';
   const blockWithDic = document.createElement('div');
   blockWithDic.innerHTML = table;
-  block = blockWithDic.firstChild;
+  const block = blockWithDic.firstChild;
   const config = readBlockConfig(block);
   config['details-button'] = !!(config['details-button'] || config['details-button'] === 'true');
   config['cart-button'] = !!(config['cart-button'] || config['cart-button'] === 'true');
