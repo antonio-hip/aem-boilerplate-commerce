@@ -46,7 +46,7 @@ fragment priceFields on ProductViewPrice {
   }
 }`;
 
-async function createCarousel() {
+async function createCarousel(block) {
   const carouselWrappers = document.querySelectorAll('.carousel-wrapper');
 
   for (const carouselWrapper of carouselWrappers) {
@@ -68,11 +68,11 @@ async function createCarousel() {
       const img = picture.querySelector('img');
       if (carouselSliderOption) {
         // eslint-disable-next-line no-use-before-define,no-await-in-loop
-        const productTeaser = await decorateTeaser();
+        const productTeaser = await decorateTeaser(block);
         picture.replaceWith(productTeaser);
       } else {
         // eslint-disable-next-line no-use-before-define,no-await-in-loop
-        const productTeaser = await decorateTeaser();
+        const productTeaser = await decorateTeaser(block);
         picture.replaceWith(productTeaser);
       }
     }
@@ -197,8 +197,8 @@ async function createCarousel() {
   }
 }
 
-export default async function decorate() {
-  createCarousel();
+export default async function decorate(block) {
+  createCarousel(block);
 }
 
 function renderPlaceholder(config, block) {
