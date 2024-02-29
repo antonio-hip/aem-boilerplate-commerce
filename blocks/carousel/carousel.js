@@ -65,9 +65,7 @@ async function createCarousel(block) {
 
     // eslint-disable-next-line no-restricted-syntax
     for (const picture of pictures) {
-      var div = document.createElement('div');
-
-      div.innerHTML = '<table>' +
+      const table = '<table>' +
         '  <tbody>' +
         '    <tr>' +
         '      <td colspan="2"><strong>Product Teaser</strong></td>' +
@@ -86,7 +84,8 @@ async function createCarousel(block) {
         '    </tr>' +
         '  </tbody>' +
         '</table>';
-      const teaserBlock = buildBlock('product-teaser', div.firstChild);
+      // eslint-disable-next-line no-use-before-define
+      const teaserBlock = buildProductTeaserBlock(table);
       const img = picture.querySelector('img');
       if (carouselSliderOption) {
         // eslint-disable-next-line no-await-in-loop,no-use-before-define
@@ -224,6 +223,33 @@ export default async function decorate(block) {
   createCarousel(block);
 }
 
+function buildProductTeaserBlock(table) {
+
+  var divElement = document.createElement('div');
+  divElement.className = 'product-teaser block';
+  divElement.setAttribute('data-block-name', 'product-teaser');
+  divElement.setAttribute('data-block-status', 'loading');
+
+  var rows = table.getElementsByTagName('tr');
+  for (var i = 1; i < rows.length; i++) {
+    var cells = rows[i].getElementsByTagName('td');
+
+    // Create a new div for each row's content
+    var contentDiv = document.createElement('div');
+
+    // Create two divs inside the content div for each cell's content
+    for (var j = 0; j < cells.length; j++) {
+      var innerDiv = document.createElement('div');
+      innerDiv.textContent = cells[j].textContent;
+      contentDiv.appendChild(innerDiv);
+    }
+
+    // Append the content div to the main div
+    divElement.appendChild(contentDiv);
+  }
+
+  return divElement;
+}
 function renderPlaceholder(config, block) {
   block.textContent = '';
   block.appendChild(document.createRange().createContextualFragment(`
