@@ -65,23 +65,28 @@ async function createCarousel(block) {
 
     // eslint-disable-next-line no-restricted-syntax
     for (const picture of pictures) {
-      const teaserBlock = buildBlock('product-teaser', '<tbody>\n' +
-        '                  <tr>\n' +
-        '                    <td colspan="2"><strong>Product Teaser</strong></td>\n' +
-        '                  </tr>\n' +
-        '                  <tr>\n' +
-        '                    <td>SKU</td>\n' +
-        '                    <td>24-MB02</td>\n' +
-        '                  </tr>\n' +
-        '                  <tr>\n' +
-        '                    <td>Details Button</td>\n' +
-        '                    <td>true</td>\n' +
-        '                  </tr>\n' +
-        '                  <tr>\n' +
-        '                    <td>Cart Button</td>\n' +
-        '                    <td>true</td>\n' +
-        '                  </tr>\n' +
-        '                </tbody>');
+      var div = document.createElement('div');
+
+      div.innerHTML = '<table>' +
+        '  <tbody>' +
+        '    <tr>' +
+        '      <td colspan="2"><strong>Product Teaser</strong></td>' +
+        '    </tr>' +
+        '    <tr>' +
+        '      <td>SKU</td>' +
+        '      <td>24-MB02</td>' +
+        '    </tr>' +
+        '    <tr>' +
+        '      <td>Details Button</td>' +
+        '      <td>true</td>' +
+        '    </tr>' +
+        '    <tr>' +
+        '      <td>Cart Button</td>' +
+        '      <td>true</td>' +
+        '    </tr>' +
+        '  </tbody>' +
+        '</table>';
+      const teaserBlock = buildBlock('product-teaser', div.firstChild);
       const img = picture.querySelector('img');
       if (carouselSliderOption) {
         // eslint-disable-next-line no-await-in-loop,no-use-before-define
