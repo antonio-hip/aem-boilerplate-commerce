@@ -1,4 +1,4 @@
-import { readBlockConfig } from '../../scripts/aem.js';
+import { readBlockConfig, buildBlock } from '../../scripts/aem.js';
 import { performCatalogServiceQuery, renderPrice } from '../../scripts/commerce.js';
 
 
@@ -68,11 +68,30 @@ async function createCarousel(block) {
       const img = picture.querySelector('img');
       if (carouselSliderOption) {
         // eslint-disable-next-line no-use-before-define,no-await-in-loop
-        const productTeaser = await decorateTeaser(block);
+        const teaserBlock = buildBlock("product-teaser", '<table>\n' +
+          '                <tbody>\n' +
+          '                  <tr>\n' +
+          '                    <td colspan="2"><strong>Product Teaser</strong></td>\n' +
+          '                  </tr>\n' +
+          '                  <tr>\n' +
+          '                    <td>SKU</td>\n' +
+          '                    <td>24-MB02</td>\n' +
+          '                  </tr>\n' +
+          '                  <tr>\n' +
+          '                    <td>Details Button</td>\n' +
+          '                    <td>true</td>\n' +
+          '                  </tr>\n' +
+          '                  <tr>\n' +
+          '                    <td>Cart Button</td>\n' +
+          '                    <td>true</td>\n' +
+          '                  </tr>\n' +
+          '                </tbody>\n' +
+          '              </table>')M
+        const productTeaser = await decorateTeaser(teaserBlock);
         picture.replaceWith(productTeaser);
       } else {
         // eslint-disable-next-line no-use-before-define,no-await-in-loop
-        const productTeaser = await decorateTeaser(block);
+        const productTeaser = await decorateTeaser(teaserBlock);
         picture.replaceWith(productTeaser);
       }
     }
@@ -284,28 +303,11 @@ function renderProduct(product, config, block) {
       cartApi.addToCart(product.sku, [], 1, 'product-teaser');
     });
   }
-  block.appendChild(fragment)
+  block.appendChild(fragment);
   return block;
 }
 
-export async function decorateTeaser() {
-  const table = '<div class="product-teaser block" data-block-name="product-teaser" data-block-status="loading">' +
-                                       '<div>' +
-                                         '<div>SKU</div>' +
-                                         '<div>24-MB02</div>' +
-                                       '</div>' +
-                                       '<div>' +
-                                         '<div>Details Button</div>' +
-                                         '<div>true</div>' +
-                                       '</div>' +
-                                       '<div>' +
-                                         '<div>Cart Button</div>' +
-                                         '<div>true</div>' +
-                                       '</div>' +
-                                     '</div>';
-  const blockWithDic = document.createElement('div');
-  blockWithDic.innerHTML = table;
-  const block = blockWithDic.firstChild;
+export async function decorateTeaser(block) {
   const config = readBlockConfig(block);
   config['details-button'] = !!(config['details-button'] || config['details-button'] === 'true');
   config['cart-button'] = !!(config['cart-button'] || config['cart-button'] === 'true');
