@@ -1,4 +1,49 @@
 import { createOptimizedPicture } from '../../scripts/aem.js';
+import { readBlockConfig } from '../../scripts/aem.js';
+import { performCatalogServiceQuery, renderPrice } from '../../scripts/commerce.js';
+
+const productTeaserQuery = `query productTeaser($sku: String!) {
+  products(skus: [$sku]) {
+    sku
+    urlKey
+    name
+    addToCartAllowed
+    __typename
+    images(roles: ["small_image"]) {
+      label
+      url
+    }
+    ... on SimpleProductView {
+      price {
+        ...priceFields
+      }
+    }
+    ... on ComplexProductView {
+      priceRange {
+        minimum {
+          ...priceFields
+        }
+        maximum {
+          ...priceFields
+        }
+      }
+    }
+  }
+}
+fragment priceFields on ProductViewPrice {
+  regular {
+    amount {
+      currency
+      value
+    }
+  }
+  final {
+    amount {
+      currency
+      value
+    }
+  }
+}`;
 
 function createCarousel() {
   const carouselWrappers = document.querySelectorAll('.carousel-wrapper');
@@ -20,9 +65,13 @@ function createCarousel() {
     pictures.forEach((picture) => {
       const img = picture.querySelector('img');
       if (carouselSliderOption) {
-        picture.replaceWith(createOptimizedPicture('carousel-slider', img.src, img.alt, false));
+        // eslint-disable-next-line no-use-before-define
+        const productTeaser = decorateTeaser();
+        picture.replaceWith(productTeaser);
       } else {
-        picture.replaceWith(createOptimizedPicture('carousel', img.src, img.alt, false));
+        // eslint-disable-next-line no-use-before-define
+        const productTeaser = decorateTeaser();
+        picture.replaceWith(productTeaser);
       }
     });
 
@@ -150,55 +199,6 @@ export default async function decorate() {
   createCarousel();
 }
 
-
-
-
-import { readBlockConfig } from '../../scripts/aem.js';
-import { performCatalogServiceQuery, renderPrice } from '../../scripts/commerce.js';
-
-const productTeaserQuery = `query productTeaser($sku: String!) {
-  products(skus: [$sku]) {
-    sku
-    urlKey
-    name
-    addToCartAllowed
-    __typename
-    images(roles: ["small_image"]) {
-      label
-      url
-    }
-    ... on SimpleProductView {
-      price {
-        ...priceFields
-      }
-    }
-    ... on ComplexProductView {
-      priceRange {
-        minimum {
-          ...priceFields
-        }
-        maximum {
-          ...priceFields
-        }
-      }
-    }
-  }
-}
-fragment priceFields on ProductViewPrice {
-  regular {
-    amount {
-      currency
-      value
-    }
-  }
-  final {
-    amount {
-      currency
-      value
-    }
-  }
-}`;
-
 function renderPlaceholder(config, block) {
   block.textContent = '';
   block.appendChild(document.createRange().createContextualFragment(`
@@ -286,7 +286,7 @@ function renderProduct(product, config, block) {
   block.appendChild(fragment);
 }
 
-export default async function decorate(block) {
+export async function decorateTeaser(block) {
   const config = readBlockConfig(block);
   config['details-button'] = !!(config['details-button'] || config['details-button'] === 'true');
   config['cart-button'] = !!(config['cart-button'] || config['cart-button'] === 'true');
