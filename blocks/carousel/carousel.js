@@ -322,6 +322,6 @@ export async function decorateTeaser() {
 
   const html = renderProduct(product, config, block);
   const htmlElem = document.createElement('div');
-  htmlElem.innerHTML = html;
+  htmlElem.appendChild(html);
   return htmlElem;
 }
