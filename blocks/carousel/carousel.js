@@ -1,7 +1,5 @@
-import { readBlockConfig, buildBlock } from '../../scripts/aem.js';
+import { readBlockConfig } from '../../scripts/aem.js';
 import { performCatalogServiceQuery, renderPrice } from '../../scripts/commerce.js';
-
-
 
 const productTeaserQuery = `query productTeaser($sku: String!) {
   products(skus: [$sku]) {
@@ -63,31 +61,26 @@ async function createCarousel(block) {
 
     const pictures = [...carousel.querySelectorAll(':scope > div > div > table')];
 
+    var counter = 0;
     // eslint-disable-next-line no-restricted-syntax
     for (const picture of pictures) {
-      const div = document.createElement('div');
+      // Assuming you have the .carousel element already selected (e.g., by class)
+      var targetTable = block.querySelectorAll('table')[counter];
 
-      div.innerHTML = '<table>' +
-        '  <tbody>' +
-        '    <tr>' +
-        '      <td colspan="2"><strong>Product Teaser</strong></td>' +
-        '    </tr>' +
-        '    <tr>' +
-        '      <td>SKU</td>' +
-        '      <td>24-MB02</td>' +
-        '    </tr>' +
-        '    <tr>' +
-        '      <td>Details Button</td>' +
-        '      <td>true</td>' +
-        '    </tr>' +
-        '    <tr>' +
-        '      <td>Cart Button</td>' +
-        '      <td>true</td>' +
-        '    </tr>' +
-        '  </tbody>' +
-        '</table>';
+      var divElement = document.createElement('div');
+      divElement.className = 'product-teaser block';
+      divElement.setAttribute('data-block-name', 'product-teaser');
+      divElement.setAttribute('data-block-status', 'loading');
+
+      var tableContainerDiv = document.createElement('div');
+      tableContainerDiv.appendChild(targetTable.cloneNode(true));
+
+      var emptyDiv = document.createElement('div');
+
+      divElement.appendChild(tableContainerDiv);
+      divElement.appendChild(emptyDiv);
       // eslint-disable-next-line no-use-before-define
-      const teaserBlock = buildProductTeaserBlock(div.firstChild);
+      const teaserBlock = buildProductTeaserBlock(divElement);
       const img = picture.querySelector('img');
       if (carouselSliderOption) {
         // eslint-disable-next-line no-await-in-loop,no-use-before-define
