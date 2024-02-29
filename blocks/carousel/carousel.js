@@ -44,7 +44,7 @@ fragment priceFields on ProductViewPrice {
   }
 }`;
 
-function createCarousel(block) {
+function createCarousel() {
   const carouselWrappers = document.querySelectorAll('.carousel-wrapper');
 
   carouselWrappers.forEach((carouselWrapper) => {
