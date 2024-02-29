@@ -287,7 +287,7 @@ function renderProduct(product, config, block) {
   block.appendChild(fragment);
 }
 
-export async function decorateTeaser() {
+export function decorateTeaser() {
   const table = '<div class="product-teaser block" data-block-name="product-teaser" data-block-status="loading">' +
                                        '<div>' +
                                          '<div>SKU</div>' +
