@@ -311,7 +311,7 @@ export function decorateTeaser() {
 
   renderPlaceholder(config, block);
 
-  const { products } = await performCatalogServiceQuery(productTeaserQuery, {
+  const { products } = performCatalogServiceQuery(productTeaserQuery, {
     sku: config.sku,
   });
   if (!products || !products.length > 0 || !products[0].sku) {
