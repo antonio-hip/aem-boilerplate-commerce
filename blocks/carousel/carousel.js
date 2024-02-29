@@ -287,7 +287,7 @@ function renderProduct(product, config, block) {
   block.appendChild(fragment);
 }
 
-export function decorateTeaser() {
+export async function decorateTeaser() {
   const table = '<div class="product-teaser block" data-block-name="product-teaser" data-block-status="loading">' +
                                        '<div>' +
                                          '<div>SKU</div>' +
@@ -311,7 +311,7 @@ export function decorateTeaser() {
 
   renderPlaceholder(config, block);
 
-  const { products } = performCatalogServiceQuery(productTeaserQuery, {
+  const { products } = await performCatalogServiceQuery(productTeaserQuery, {
     sku: config.sku,
   });
   if (!products || !products.length > 0 || !products[0].sku) {
