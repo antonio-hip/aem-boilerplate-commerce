@@ -67,7 +67,7 @@ function createCarousel() {
       const img = picture.querySelector('img');
       if (carouselSliderOption) {
         // eslint-disable-next-line no-use-before-define
-        export async function decorateTeaser() {
+
           const table = '<div class="product-teaser block" data-block-name="product-teaser" data-block-status="loading">' +
                                                '<div>' +
                                                  '<div>SKU</div>' +
@@ -91,7 +91,7 @@ function createCarousel() {
 
           renderPlaceholder(config, block);
 
-          const { products } = await performCatalogServiceQuery(productTeaserQuery, {
+          const { products } = performCatalogServiceQuery(productTeaserQuery, {
             sku: config.sku,
           });
           if (!products || !products.length > 0 || !products[0].sku) {
@@ -101,11 +101,10 @@ function createCarousel() {
           product.images = product.images.map((image) => ({ ...image, url: image.url.replace(/^https?:/, '') }));
 
           renderProduct(product, config, block);
-        }
+
         picture.replaceWith('bok');
       } else {
         // eslint-disable-next-line no-use-before-define
-        export async function decorateTeaser() {
           const table = '<div class="product-teaser block" data-block-name="product-teaser" data-block-status="loading">' +
                                                '<div>' +
                                                  '<div>SKU</div>' +
@@ -129,7 +128,7 @@ function createCarousel() {
 
           renderPlaceholder(config, block);
 
-          const { products } = await performCatalogServiceQuery(productTeaserQuery, {
+          const { products } = performCatalogServiceQuery(productTeaserQuery, {
             sku: config.sku,
           });
           if (!products || !products.length > 0 || !products[0].sku) {
@@ -141,7 +140,7 @@ function createCarousel() {
           renderProduct(product, config, block);
         }
         picture.replaceWith('bok');
-      }
+
     });
 
     const numSlides = [...carousel.querySelectorAll(':scope > div > div')].length;
