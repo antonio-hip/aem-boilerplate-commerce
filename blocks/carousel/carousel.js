@@ -65,32 +65,32 @@ async function createCarousel(block) {
 
     // eslint-disable-next-line no-restricted-syntax
     for (const picture of pictures) {
+      const teaserBlock = buildBlock('product-teaser', '<table>\n' +
+        '                <tbody>\n' +
+        '                  <tr>\n' +
+        '                    <td colspan="2"><strong>Product Teaser</strong></td>\n' +
+        '                  </tr>\n' +
+        '                  <tr>\n' +
+        '                    <td>SKU</td>\n' +
+        '                    <td>24-MB02</td>\n' +
+        '                  </tr>\n' +
+        '                  <tr>\n' +
+        '                    <td>Details Button</td>\n' +
+        '                    <td>true</td>\n' +
+        '                  </tr>\n' +
+        '                  <tr>\n' +
+        '                    <td>Cart Button</td>\n' +
+        '                    <td>true</td>\n' +
+        '                  </tr>\n' +
+        '                </tbody>\n' +
+        '              </table>');
       const img = picture.querySelector('img');
       if (carouselSliderOption) {
-        const teaserBlock = buildBlock('product-teaser', '<table>\n' +
-          '                <tbody>\n' +
-          '                  <tr>\n' +
-          '                    <td colspan="2"><strong>Product Teaser</strong></td>\n' +
-          '                  </tr>\n' +
-          '                  <tr>\n' +
-          '                    <td>SKU</td>\n' +
-          '                    <td>24-MB02</td>\n' +
-          '                  </tr>\n' +
-          '                  <tr>\n' +
-          '                    <td>Details Button</td>\n' +
-          '                    <td>true</td>\n' +
-          '                  </tr>\n' +
-          '                  <tr>\n' +
-          '                    <td>Cart Button</td>\n' +
-          '                    <td>true</td>\n' +
-          '                  </tr>\n' +
-          '                </tbody>\n' +
-          '              </table>');
         // eslint-disable-next-line no-await-in-loop,no-use-before-define
         const productTeaser = await decorateTeaser(teaserBlock);
         picture.replaceWith(productTeaser);
       } else {
-        // eslint-disable-next-line no-use-before-define,no-await-in-loop
+        // eslint-disable-next-line no-await-in-loop,no-use-before-define
         const productTeaser = await decorateTeaser(teaserBlock);
         picture.replaceWith(productTeaser);
       }
@@ -100,6 +100,7 @@ async function createCarousel(block) {
 
     if (numSlides > 1) {
       if (carouselWrapper.querySelectorAll('.arrow').length === 2) {
+        // eslint-disable-next-line no-continue
         continue;
       }
 
