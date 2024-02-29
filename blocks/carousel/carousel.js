@@ -288,20 +288,22 @@ function renderProduct(product, config, block) {
 }
 
 export async function decorateTeaser() {
-const block = '<div class="product-teaser block" data-block-name="product-teaser" data-block-status="loading">' +
-                         '<div>' +
-                           '<div>SKU</div>' +
-                           '<div>MS06</div>' +
-                         '</div>' +
-                         '<div>' +
-                           '<div>Details Button</div>' +
-                           '<div>true</div>' +
-                         '</div>' +
-                         '<div>' +
-                           '<div>Cart Button</div>' +
-                           '<div>true</div>' +
-                         '</div>' +
-                       '</div>';
+  const table = '<div class="product-teaser block" data-block-name="product-teaser" data-block-status="loading">' +
+                                       '<div>' +
+                                         '<div>SKU</div>' +
+                                         '<div>MS06</div>' +
+                                       '</div>' +
+                                       '<div>' +
+                                         '<div>Details Button</div>' +
+                                         '<div>true</div>' +
+                                       '</div>' +
+                                       '<div>' +
+                                         '<div>Cart Button</div>' +
+                                         '<div>true</div>' +
+                                       '</div>' +
+                                     '</div>';
+  const block = document.createElement('div');
+  block.innerHTML = table;
   const config = readBlockConfig(block);
   config['details-button'] = !!(config['details-button'] || config['details-button'] === 'true');
   config['cart-button'] = !!(config['cart-button'] || config['cart-button'] === 'true');
