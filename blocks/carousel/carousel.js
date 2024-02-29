@@ -59,7 +59,7 @@ function createCarousel() {
 
     carouselContainer.prepend(h2);
 
-    const pictures = [...carousel.querySelectorAll(':scope > div > div > picture')];
+    const pictures = [...carousel.querySelectorAll(':scope > div > div > table')];
 
     pictures.forEach((picture) => {
       const img = picture.querySelector('img');
