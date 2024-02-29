@@ -1,6 +1,8 @@
 import { readBlockConfig } from '../../scripts/aem.js';
 import { performCatalogServiceQuery, renderPrice } from '../../scripts/commerce.js';
 
+
+
 const productTeaserQuery = `query productTeaser($sku: String!) {
   products(skus: [$sku]) {
     sku
@@ -65,11 +67,11 @@ function createCarousel() {
       const img = picture.querySelector('img');
       if (carouselSliderOption) {
         // eslint-disable-next-line no-use-before-define
-        const productTeaser = '<h1>booook<h1>'
+        const productTeaser = decorateTeaser()
         picture.replaceWith(productTeaser);
       } else {
         // eslint-disable-next-line no-use-before-define
-        const productTeaser ='<h1>booook<h1>'
+        const productTeaser = decorateTeaser()
         picture.replaceWith(productTeaser);
       }
     });
@@ -285,7 +287,21 @@ function renderProduct(product, config, block) {
   block.appendChild(fragment);
 }
 
-export async function decorateTeaser(block) {
+export async function decorateTeaser() {
+const block = '<div class="product-teaser block" data-block-name="product-teaser" data-block-status="loading">
+                         <div>
+                           <div>SKU</div>
+                           <div>MS06</div>
+                         </div>
+                         <div>
+                           <div>Details Button</div>
+                           <div>true</div>
+                         </div>
+                         <div>
+                           <div>Cart Button</div>
+                           <div>true</div>
+                         </div>
+                       </div>'
   const config = readBlockConfig(block);
   config['details-button'] = !!(config['details-button'] || config['details-button'] === 'true');
   config['cart-button'] = !!(config['cart-button'] || config['cart-button'] === 'true');
