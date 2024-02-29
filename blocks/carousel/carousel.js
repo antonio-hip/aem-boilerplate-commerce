@@ -1,4 +1,3 @@
-import { createOptimizedPicture } from '../../scripts/aem.js';
 import { readBlockConfig } from '../../scripts/aem.js';
 import { performCatalogServiceQuery, renderPrice } from '../../scripts/commerce.js';
 
@@ -45,7 +44,7 @@ fragment priceFields on ProductViewPrice {
   }
 }`;
 
-function createCarousel() {
+function createCarousel(block) {
   const carouselWrappers = document.querySelectorAll('.carousel-wrapper');
 
   carouselWrappers.forEach((carouselWrapper) => {
@@ -66,11 +65,11 @@ function createCarousel() {
       const img = picture.querySelector('img');
       if (carouselSliderOption) {
         // eslint-disable-next-line no-use-before-define
-        const productTeaser = decorateTeaser();
+        const productTeaser = decorateTeaser(block);
         picture.replaceWith(productTeaser);
       } else {
         // eslint-disable-next-line no-use-before-define
-        const productTeaser = decorateTeaser();
+        const productTeaser = decorateTeaser(block);
         picture.replaceWith(productTeaser);
       }
     });
