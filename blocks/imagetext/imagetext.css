@@ -62,4 +62,8 @@
   .imagetext > div > picture + div > .button-container a.button {
     width: fit-content;
   }
+
+   .imagetext > div > picture + div > .button-container a.button {
+    width: fit-content;
+   }
 }

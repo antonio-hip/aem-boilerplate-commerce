@@ -103,6 +103,7 @@ function renderProduct(product, config, block) {
   });
 
   block.textContent = '';
+  alert("bok ja sam teaser");
   const fragment = document.createRange().createContextualFragment(`
     <div class="image">
     </div>
