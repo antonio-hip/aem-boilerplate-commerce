@@ -70,9 +70,9 @@ async function setJsonLdProduct(product) {
       '@type': 'Brand',
       name: brand?.value,
     },
-    url: new URL(`/products/${urlKey}/${sku.toLowerCase()}`, window.location),
+    url: new URL(`/productssss/${urlKey}/${sku.toLowerCase()}`, window.location),
     sku,
-    '@id': new URL(`/products/${urlKey}/${sku.toLowerCase()}`, window.location),
+    '@id': new URL(`/productssss/${urlKey}/${sku.toLowerCase()}`, window.location),
   }, 'product');
 }
 
