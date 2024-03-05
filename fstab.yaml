@@ -2,6 +2,6 @@ ultmountpoints:
   /: https://drive.google.com/drive/u/4/folders/1Zwb6Wysw3RR7EEN9blpXjUAzBvqZ4rPZ
 
 folders:
-  /products-high/: /products-high/default
+  /products/: /products/default
   /products-low/: /products-low/default
   /products-avanture/: /products-avanture/default
