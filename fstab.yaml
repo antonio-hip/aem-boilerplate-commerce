@@ -3,5 +3,5 @@ ultmountpoints:
 
 folders:
   /products-high/: /products-high/default
-  /products-price/: /products-price/default
+  /products-low/: /products-low/default
   /products-avanture/: /products-avanture/default
