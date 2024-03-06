@@ -315,8 +315,7 @@ export function getSkuFromUrl() {
     const path = window.location.pathname;
     const result = path.match(/\/products\/[\w|-]+\/([\w|-]+)$/);
     sku = result?.[1];
-  }
-  else {
+  } else {
     sku = window.location.search;
   }
   return sku;
