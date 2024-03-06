@@ -311,12 +311,13 @@ export function renderPrice(product, format, html = (strings, ...values) => stri
 
 export function getSkuFromUrl() {
   let sku = '';
-  if (window.location.search === '') {
+  if (window.location.hash === '') {
     const path = window.location.pathname;
     const result = path.match(/\/products\/[\w|-]+\/([\w|-]+)$/);
     sku = result?.[1];
   } else {
-    sku = window.location.search.slice(1);
+    const parts = window.location.hash.split('/');
+    sku = parts[1];
   }
   return sku;
 }
