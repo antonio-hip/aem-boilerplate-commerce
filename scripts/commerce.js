@@ -313,7 +313,7 @@ export function getSkuFromUrl() {
   var sku = '';
   if (window.location.search === '') {
     const path = window.location.pathname;
-    const result = path.match(/\/products(?:-[\w]+)?\/[\w|-]+\/([\w|-]+)$/);
+    const result = path.match(/\/products\/[\w|-]+\/([\w|-]+)$/);
     sku = result?.[1];
   }
   else {
