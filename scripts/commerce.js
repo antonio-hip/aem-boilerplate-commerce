@@ -310,7 +310,7 @@ export function renderPrice(product, format, html = (strings, ...values) => stri
 /* PDP specific functionality */
 
 export function getSkuFromUrl() {
-  var sku = '';
+  let sku = '';
   if (window.location.search === '') {
     const path = window.location.pathname;
     const result = path.match(/\/products\/[\w|-]+\/([\w|-]+)$/);
