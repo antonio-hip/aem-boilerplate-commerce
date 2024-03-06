@@ -316,7 +316,8 @@ export function getSkuFromUrl() {
     const result = path.match(/\/products\/[\w|-]+\/([\w|-]+)$/);
     sku = result?.[1];
   } else {
-    const [, sku] = window.location.hash.split('/');
+    const [, value] = window.location.hash.split('/');
+    sku = value;
   }
   return sku;
 }
