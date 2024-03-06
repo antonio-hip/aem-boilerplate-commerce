@@ -3,3 +3,4 @@ mountpoints:
 
 folders:
   /products-low/: /products-low/default
+  /products-high/: /products-high/default
