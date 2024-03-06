@@ -310,9 +310,16 @@ export function renderPrice(product, format, html = (strings, ...values) => stri
 /* PDP specific functionality */
 
 export function getSkuFromUrl() {
-  const path = window.location.pathname;
-  const result = path.match(/\/products(?:-[\w]+)?\/[\w|-]+\/([\w|-]+)$/);
-  return "24-MB05";
+  var sku = '';
+  if (window.location.search === '') {
+    const path = window.location.pathname;
+    const result = path.match(/\/products(?:-[\w]+)?\/[\w|-]+\/([\w|-]+)$/);
+    sku = result?.[1];
+  }
+  else {
+    sku = window.location.search;
+  }
+  return sku;
 }
 
 const productsCache = {};
